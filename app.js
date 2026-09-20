@@ -161,19 +161,29 @@
       {value:"错误", correct:q.answerText==="错误"}
     ];
     const correct=uniqueStrings(q.answerParts||[]);
-    const pool=seededShuffle(optionPool(q), hashCode(q.id+"pool"));
     const desired=q.type==="single"?4:Math.max(5, Math.min(7, correct.length+3));
+
+    // v7：优先使用为“这一道题”预生成的固定高仿真干扰项。
+    // 这些干扰项按题干语义、答案类型、同科目概念家族与相似答案生成，
+    // 不再从整科答案池随机抽取，因此人物题配人物、年份题配年份、
+    // 理论题配相近理论、方法题配相近方法。
+    const fixed=uniqueStrings(q.distractors||[]).filter(v=>!correct.includes(v));
     let opts=[...correct];
-    for(const x of pool){
+    for(const x of fixed){
       if(opts.length>=desired) break;
       if(!opts.includes(x)) opts.push(x);
     }
-    // Fallback only if source-answer pool is too small.
+
+    // 兼容旧题库：固定干扰项不足时才回退到同科目答案池。
     if(opts.length<desired){
-      const fallback=["以上说法均不符合题库标准答案","以上选项均不是题库标准答案","题库未给出该项"];
-      for(const x of fallback){if(opts.length<desired && !opts.includes(x)) opts.push(x);}
+      const pool=seededShuffle(optionPool(q), hashCode(q.id+"pool"));
+      for(const x of pool){
+        if(opts.length>=desired) break;
+        if(!opts.includes(x)) opts.push(x);
+      }
     }
-    const seed=hashCode(q.id+"opts");
+
+    const seed=hashCode(q.id+"opts-v7");
     return state.settings.shuffleOptions ? seededShuffle(opts, seed).map(v=>({value:v,correct:correct.includes(v)}))
                                          : opts.map(v=>({value:v,correct:correct.includes(v)}));
   }

@@ -69,3 +69,204 @@ button,input,select{font:inherit}.app-shell{max-width:1120px;margin:0 auto;min-h
 @media(min-width:900px){
   .bottom-nav{grid-auto-rows:62px}
 }
+
+
+/* ===== v6：Mac / iPad 横屏桌面布局自适应修复 =====
+   目标：
+   1. 左侧导航不再覆盖内容；
+   2. 中等宽度桌面自动收缩为窄侧栏；
+   3. 大屏恢复完整侧栏；
+   4. 手机 / iPad 竖屏继续使用底部导航。
+*/
+@media (min-width: 900px) {
+  :root {
+    --desktop-sidebar-w: 78px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-left: var(--desktop-sidebar-w);
+    padding-bottom: 0;
+    transition: padding-left .22s ease;
+  }
+
+  .topbar {
+    width: 100%;
+    left: auto;
+    right: auto;
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px 28px 34px;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    transform: none;
+    width: var(--desktop-sidebar-w);
+    height: 100vh;
+    z-index: 40;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 64px;
+    align-content: center;
+    gap: 6px;
+
+    padding: max(18px, env(safe-area-inset-top, 0px)) 8px 18px;
+    border-top: 0;
+    border-right: 1px solid var(--line);
+    background: color-mix(in srgb, var(--card) 96%, transparent);
+    backdrop-filter: blur(18px);
+    box-shadow: 8px 0 28px rgba(25, 39, 78, .035);
+    transition: width .22s ease;
+  }
+
+  .bottom-nav button {
+    width: 100%;
+    min-width: 0;
+    height: 58px;
+    padding: 7px 3px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 10px;
+  }
+
+  .bottom-nav button.active {
+    background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  }
+
+  .nav-ico {
+    display: block;
+    height: 22px;
+    line-height: 22px;
+    font-size: 20px;
+  }
+
+  /* 防止卡片 / 表单内容因宽度压缩溢出 */
+  .hero-card,
+  .recite-hero,
+  .learning-flow-card,
+  .card-panel,
+  .question-card,
+  .subject-card,
+  .quick,
+  .metric,
+  .review-cards > button {
+    min-width: 0;
+  }
+
+  .hero-card > div:first-child,
+  .recite-hero > div:first-child,
+  .learning-flow-card > div:first-child,
+  .subject-main {
+    min-width: 0;
+  }
+
+  .hero-card h1,
+  .page-head h1,
+  .question-text,
+  .subject-main b,
+  .subject-main small {
+    overflow-wrap: anywhere;
+  }
+
+  .quick-grid,
+  .metric-grid,
+  .subject-list,
+  .review-cards {
+    min-width: 0;
+  }
+}
+
+/* 1280px 及以上：显示更舒展的完整桌面侧栏 */
+@media (min-width: 1280px) {
+  :root {
+    --desktop-sidebar-w: 184px;
+  }
+
+  .bottom-nav {
+    padding-left: 12px;
+    padding-right: 12px;
+    grid-auto-rows: 62px;
+  }
+
+  .bottom-nav button {
+    height: 54px;
+    padding: 0 14px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .nav-ico {
+    width: 24px;
+    flex: 0 0 24px;
+    font-size: 20px;
+    text-align: center;
+  }
+}
+
+/* 900–1099px：进一步压缩内容间距，适合小尺寸 Mac 窗口 / iPad 横屏 */
+@media (min-width: 900px) and (max-width: 1099px) {
+  .content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .hero-card {
+    padding: 20px;
+  }
+
+  .quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .subject-list {
+    grid-template-columns: 1fr;
+  }
+
+  .review-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 900px 以下仍然走手机 / iPad 竖屏底部导航，不受桌面侧栏影响 */
+@media (max-width: 899px) {
+  .app-shell {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-left: 0;
+  }
+}
