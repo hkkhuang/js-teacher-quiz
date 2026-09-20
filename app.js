@@ -28,6 +28,10 @@
     updatedAt: Date.now()
   };
 
+  // Utility functions used during initial state loading must be defined before loadState() runs.
+  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+  const deepClone = obj => JSON.parse(JSON.stringify(obj));
+
   let state = loadState();
   let view = "home";
   let session = null;
@@ -49,9 +53,6 @@
     const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${day}`;
   };
-  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
-  const deepClone = obj => JSON.parse(JSON.stringify(obj));
-
   function mergeDefaults(obj, defs) {
     if (!obj || typeof obj !== "object") return deepClone(defs);
     const out = deepClone(defs);
