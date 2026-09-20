@@ -270,3 +270,47 @@ button,input,select{font:inherit}.app-shell{max-width:1120px;margin:0 auto;min-h
     padding-left: 0;
   }
 }
+
+
+/* ===== v8：答题选项即时选中反馈 ===== */
+.option{
+  position:relative;
+  transition:border-color .16s ease,background-color .16s ease,box-shadow .16s ease,transform .08s ease;
+}
+.option:active{transform:scale(.997)}
+.option.selected{
+  border-color:var(--primary)!important;
+  background:color-mix(in srgb,var(--primary) 9%,var(--card))!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--primary) 13%,transparent);
+}
+.option.selected .option-letter{
+  background:var(--primary);
+  color:#fff;
+}
+.option.selected::after{
+  content:"✓";
+  flex:0 0 auto;
+  width:24px;height:24px;margin-left:6px;
+  border-radius:999px;
+  display:grid;place-items:center;
+  background:var(--primary);color:#fff;
+  font-size:14px;font-weight:900;
+}
+.option.correct{
+  border-color:var(--ok)!important;
+  background:color-mix(in srgb,var(--ok) 9%,var(--card))!important;
+  box-shadow:none;
+}
+.option.correct .option-letter{background:var(--ok);color:#fff}
+.option.wrong{
+  border-color:var(--bad)!important;
+  background:color-mix(in srgb,var(--bad) 8%,var(--card))!important;
+  box-shadow:none;
+}
+.option.wrong .option-letter{background:var(--bad);color:#fff}
+.option.correct::after,.option.wrong::after{display:none}
+@media (hover:hover){
+  .option:not(.correct):not(.wrong):hover{
+    border-color:color-mix(in srgb,var(--primary) 55%,var(--line));
+  }
+}

@@ -706,8 +706,19 @@
   function bindQuiz(){
     const q=BY_ID.get(session.ids[session.idx]);
     $$('input[name="answer"]').forEach(inp=>inp.onchange=()=>{
-      const vals=[...document.querySelectorAll('input[name="answer"]:checked')].map(x=>x.value);
-      session.answers[q.id]=vals;persistSession();
+      const allInputs=[...document.querySelectorAll('input[name="answer"]')];
+
+      // v8：选择后立即给出视觉反馈，不必等到“提交答案”
+      if(q.type==="multi"){
+        allInputs.forEach(x=>x.closest(".option")?.classList.toggle("selected", x.checked));
+      }else{
+        allInputs.forEach(x=>x.closest(".option")?.classList.remove("selected"));
+        if(inp.checked) inp.closest(".option")?.classList.add("selected");
+      }
+
+      const vals=allInputs.filter(x=>x.checked).map(x=>x.value);
+      session.answers[q.id]=vals;
+      persistSession();
     });
     const sub=$('[data-action="submitAnswer"]'); if(sub) sub.onclick=submitCurrent;
     const next=$('[data-action="nextQuestion"]'); if(next) next.onclick=nextQuestion;
