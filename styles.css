@@ -314,3 +314,11 @@ button,input,select{font:inherit}.app-shell{max-width:1120px;margin:0 auto;min-h
     border-color:color-mix(in srgb,var(--primary) 55%,var(--line));
   }
 }
+
+/* ===== v9：逐题独立记忆技巧 ===== */
+.memory-box{border-color:color-mix(in srgb,var(--primary) 28%,var(--line))!important;background:color-mix(in srgb,var(--primary) 3%,var(--card))}
+.memory-box summary,.recite-detail summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.memory-type{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;background:color-mix(in srgb,var(--primary) 11%,var(--card));color:var(--primary);font-size:10px;font-weight:800}
+.memory-tip{font-size:14px;line-height:1.75;font-weight:600}
+.confusion-box{border-color:color-mix(in srgb,var(--warn) 32%,var(--line))!important;background:color-mix(in srgb,var(--warn) 3%,var(--card))}
+.confusion-box summary{color:var(--warn)}

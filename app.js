@@ -224,6 +224,10 @@
     return tags.length?tags:["题干—答案配对"];
   }
 
+  function memoryTipFor(q){ return q.memoryTip || sourceExplanation(q); }
+  function confusionTipFor(q){ return q.confusionTip || "先抓题干限定词，再与题库标准答案做一一对应。"; }
+  function memoryTagsFor(q){ return (q.memoryTags && q.memoryTags.length) ? q.memoryTags : keywordHint(q); }
+
   function setView(v){view=v; render();}
   window.setView=setView;
 
@@ -408,6 +412,11 @@
         <div class="question-text">${esc(maskQuestion(q))}</div>
         ${session.reveal?`
           <div class="answer-reveal"><span>标准答案</span><b>${esc(q.answerText)}</b></div>
+          <details class="recite-detail" open><summary>本题怎么记 <span class="memory-type">${esc(q.memoryType||"记忆技巧")}</span></summary>
+            <p class="memory-tip">${esc(memoryTipFor(q))}</p>
+            <div class="tags">${memoryTagsFor(q).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
+          </details>
+          <details class="recite-detail"><summary>易混提醒</summary><p>${esc(confusionTipFor(q))}</p></details>
           <div class="recite-actions">
             <button data-recite="again">不认识</button><button data-recite="familiar">有印象</button><button data-recite="mastered">已掌握</button>
           </div>`:
@@ -464,9 +473,13 @@
       <div class="feedback-title">${correct?"✓ 回答正确":"✕ 回答错误"}</div>
       <div class="answer-line"><span>标准答案</span><b>${esc(ans)}</b></div>
       <details open><summary>题库原文</summary><p>${esc(q.original)}</p></details>
-      <details open><summary>辅助理解</summary><p>${esc(sourceExplanation(q))}</p>
-        <div class="tags">${keywordHint(q).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
-        <p class="source-note">“标准答案/题库原文”来自上传题库；“辅助理解/记忆提示”为系统基于题库文字生成的学习辅助，不替代题库原文。</p>
+      <details open class="memory-box"><summary>本题怎么记 <span class="memory-type">${esc(q.memoryType||"记忆技巧")}</span></summary>
+        <p class="memory-tip">${esc(memoryTipFor(q))}</p>
+        <div class="tags">${memoryTagsFor(q).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
+      </details>
+      <details open class="confusion-box"><summary>易混提醒</summary>
+        <p>${esc(confusionTipFor(q))}</p>
+        <p class="source-note">题库标准答案与题库原文来自上传材料；混淆项属于训练重构项，不视为原题库官方选项。</p>
       </details>
       ${!correct?`<div class="wrong-reason"><span>这次为什么错？</span>${["概念混淆","记忆不牢","审题失误","多选漏选","时间/人物混淆"].map(x=>`<button data-wrong-reason="${x}">${x}</button>`).join("")}</div>`:""}
     </div>`;
